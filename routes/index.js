@@ -2,13 +2,17 @@ const express = require('express')
 const router = express.Router()
 const needle = require('needle')
 const url = require('url');
+const apicache = require('apicache')
 
 // Env vars
 const API_KEY_NAME = process.env.API_KEY_NAME
 const API_KEY_VALUE = process.env.API_KEY_VALUE
 
+// init cache
+let cache = apicache.middleware
 
-router.get('/account/by-riot-id/:region/:name/:tagline', async (req, res) => {
+
+router.get('/account/by-riot-id/:region/:name/:tagline', cache('60 minutes'), async (req, res) => {
     try{
         const { region, name, tagline } = req.params;
         console.log(url.parse(req.url, true).query)
@@ -29,7 +33,7 @@ router.get('/account/by-riot-id/:region/:name/:tagline', async (req, res) => {
     }
 })
 
-router.get('/mastery/by-puuid/:server/:puuid', async (req, res) => {
+router.get('/mastery/by-puuid/:server/:puuid', cache('15 minutes'), async (req, res) => {
     try{
         const { server, puuid } = req.params;
         console.log(url.parse(req.url, true).query)
