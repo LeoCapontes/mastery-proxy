@@ -12,7 +12,7 @@ const API_KEY_VALUE = process.env.API_KEY_VALUE
 let cache = apicache.middleware
 
 
-router.get('/account/by-riot-id/:region/:name/:tagline', cache('60 minutes'), async (req, res) => {
+router.get('/account/by-riot-id/:region/:name/:tagline', cache('20 minutes'), async (req, res) => {
     try{
         const { region, name, tagline } = req.params;
         console.log(url.parse(req.url, true).query)
