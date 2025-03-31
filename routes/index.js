@@ -13,20 +13,21 @@ let cache = apicache.middleware
 
 
 router.get('/account/by-riot-id/:region/:name/:tagline', cache('20 minutes'), async (req, res) => {
-    try{
+    try {
         const { region, name, tagline } = req.params;
-        console.log(url.parse(req.url, true).query)
+        console.log(url.parse(req.url, true).query);
         const params = new URLSearchParams({
             [API_KEY_NAME]: API_KEY_VALUE,
-        })
+        });
         const apiUrl = `https://${encodeURIComponent(region)}.api.riotgames.com/riot/account/v1/accounts/by-riot-id/${encodeURIComponent(name)}/${encodeURIComponent(tagline)}?${params.toString()}`;
 
         console.log(`Forwarding request to: ${apiUrl}`);
 
         const apiRes = await needle('get', apiUrl);
-        const data = apiRes.body
-
-        res.status(200).json(data)
+        const data = apiRes.body;
+        
+        const statusCode = data.status && data.status.status_code ? data.status.status_code : 200;
+        res.status(statusCode).json(data);
     } catch (error) {
         console.error('Error fetching data from Riot Games API:', error.message);
         res.status(error.statusCode || 500).json({ error: error.message });
@@ -46,7 +47,9 @@ router.get('/mastery/by-puuid/:server/:puuid', cache('15 minutes'), async (req, 
 
         const apiRes = await needle('get', apiUrl);
         const data = apiRes.body
-        res.status(200).json(data)
+
+        const statusCode = data.status && data.status.status_code ? data.status.status_code : 200;
+        res.status(statusCode).json(data);
     } catch (error) {
         console.error('Error fetching data from Riot Games API:', error.message);
         res.status(error.statusCode || 500).json({ error: error.message });
@@ -66,7 +69,9 @@ router.get('/summoner/by-puuid/:server/:puuid', cache('15 minutes'), async (req,
 
         const apiRes = await needle('get', apiUrl);
         const data = apiRes.body
-        res.status(200).json(data)
+
+        const statusCode = data.status && data.status.status_code ? data.status.status_code : 200;
+        res.status(statusCode).json(data);
     }catch (error) {
         console.error('Error fetching data from Riot Games API:', error.message);
         res.status(error.statusCode || 500).json({ error: error.message });
