@@ -78,5 +78,28 @@ router.get('/summoner/by-puuid/:server/:puuid', cache('15 minutes'), async (req,
     }
 })
 
+router.get('/masteryscore/by-puuid/:server/:puuid', cache('15 minutes'), async (req, res) => {
+    try{
+        const {server, puuid} = req.params
+        console.log(url.parse(req.url, true).query)
+        const params = new URLSearchParams({
+            [API_KEY_NAME]: API_KEY_VALUE,
+        })
+        const apiUrl = `https://${encodeURIComponent(server)}.api.riotgames.com/lol/champion-mastery/v4/scores/by-puuid/${encodeURIComponent(puuid)}?${params.toString()}`
+
+        console.log(`Forwarding request to: ${apiUrl}`);
+
+        const apiRes = await needle('get', apiUrl);
+        const data = apiRes.body
+
+        const statusCode = data.status && data.status.status_code ? data.status.status_code : 200;
+        res.status(statusCode).json(data);
+
+    } catch(error) {
+        console.error('Error fetching data from Riot Games API:', error.message);
+        res.status(error.statusCode || 500).json({ error: error.message });
+    }
+})
+
 module.exports = router
 
