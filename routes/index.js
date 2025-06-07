@@ -78,7 +78,7 @@ router.get('/summoner/by-puuid/:server/:puuid', cache('15 minutes'), async (req,
     }
 })
 
-router.get('/masteryscore/by-puuid/:server/:puuid', cache('15 minutes'), async (req, res) => {
+router.get('/masteryscore/by-puuid/:server/:puuid', cache('10 secondss'), async (req, res) => {
     try{
         const {server, puuid} = req.params
         console.log(url.parse(req.url, true).query)
